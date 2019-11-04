@@ -1,12 +1,29 @@
-interface Person {
-    firstName: string;
-    lastName: string;
+import axios,{
+    AxiosResponse,
+    AxiosError
+} from "../../node_modules/axios/index"
+interface IItem{
+    id: number,
+    name : string,
+    quality : string,
+    quantity : number
 }
 
-function greeter(person: Person): string {
-    return "Hello, " + person.firstName + " " + person.lastName;
-}
-let user: Person = { firstName: "John", lastName: "Doe" };
+//url for the rest webservice at Azure
+let itemWebUrl: string = "http://localhost:3452/api/localitems";
 
-let element: HTMLDivElement = <HTMLDivElement> document.getElementById("content");
-element.innerHTML = greeter(user);
+let GetAllCarsButton: HTMLButtonElement = <HTMLButtonElement> document.getElementById("getAllButton");
+GetAllCarsButton.addEventListener('click',SelectAllCars);
+function SelectAllCars(): void{
+    axios.get<IItem[]>(itemWebUrl)
+    .then(function(response : AxiosResponse<IItem[]>)
+    { response.data.forEach((item:IItem) => {
+        console.log("the item is "+item.name)
+        document.getElementsByTagName("body")[0].innerHTML+= "<br>" + item.name+"  "+ item.quality + "<br>"
+    });
+
+    })
+    .catch(function(error : AxiosError){});
+    
+    
+}
